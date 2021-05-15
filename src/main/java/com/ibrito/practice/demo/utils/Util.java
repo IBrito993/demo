@@ -2,6 +2,9 @@ package com.ibrito.practice.demo.utils;
 
 
 
+import com.ibrito.practice.demo.exception.BadRequestException;
+import com.ibrito.practice.demo.exception.ConflictException;
+import com.ibrito.practice.demo.exception.NotFoundException;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -32,4 +35,28 @@ public class Util {
   }
 
 
+  public static float getTotal(float price, float discount) {
+    return price - (price * discount) / 100L;
+  }
+
+  public static void verifyForBadRequest(boolean condition, String message)
+          throws BadRequestException {
+    if (condition) {
+      throw new BadRequestException(message);
+    }
+  }
+
+  public static void verifyForNotFound(boolean condition, String message)
+          throws NotFoundException {
+    if (condition) {
+      throw new NotFoundException(message);
+    }
+  }
+
+  public static void verifyForConflict(boolean condition, String message)
+          throws ConflictException {
+    if (condition) {
+      throw new ConflictException(message);
+    }
+  }
 }

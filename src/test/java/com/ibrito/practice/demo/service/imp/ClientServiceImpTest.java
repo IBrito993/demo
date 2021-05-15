@@ -3,6 +3,7 @@ package com.ibrito.practice.demo.service.imp;
 import com.ibrito.practice.demo.dto.client.ClientFilter;
 import com.ibrito.practice.demo.dto.client.ClientPageableRS;
 import com.ibrito.practice.demo.dto.client.ClientRQ;
+import com.ibrito.practice.demo.dto.client.ClientRS;
 import com.ibrito.practice.demo.entity.ClientEntity;
 import com.ibrito.practice.demo.repository.ClientRepository;
 import com.ibrito.practice.demo.service.ClientService;
@@ -24,31 +25,27 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class ClientServiceImpTest {
-
     @Mock
     private ClientRepository clientRepository;
-
-
-    private ClientService clientService ; // underTest
+    @InjectMocks
+    private ClientService clientService = new ClientServiceImp(clientRepository) ; // underTest
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        clientService = new ClientServiceImp(clientRepository);
     }
 
     @Test
     void canCreateClient() {
-        ClientRQ client = ClientRQ.builder().address("address")
+        ClientRQ clientRQ = ClientRQ.builder().address("address")
                 .email("mail@mail.com")
                 .name("name").phone("999999999").rut("12345698-0").build();
 
-        clientService.create(client);
+        clientService.create(clientRQ);
 
         ArgumentCaptor<ClientEntity> clientArgumentCaptor =
                 ArgumentCaptor.forClass(ClientEntity.class);
@@ -58,7 +55,7 @@ class ClientServiceImpTest {
 
         ClientEntity capturedClient = clientArgumentCaptor.getValue();
 
-        assertThat(capturedClient).isEqualTo(client);
+        assertThat(capturedClient).isEqualTo(clientRQ);
 
     }
 
@@ -71,7 +68,7 @@ class ClientServiceImpTest {
 
         Mockito.when(clientRepository.findById(id)).thenReturn(Optional.of(client));
 
-        ClientEntity clientRS = clientService.getById(id);
+        ClientRS clientRS = clientService.getById(id);
 
         assertEquals(client.getName(), clientRS.getName());
     }

@@ -8,9 +8,9 @@ import com.ibrito.practice.demo.entity.ClientEntity;
 import com.ibrito.practice.demo.exception.NotFoundException;
 import com.ibrito.practice.demo.repository.ClientRepository;
 import com.ibrito.practice.demo.service.ClientService;
+import com.ibrito.practice.demo.utils.Converter;
 import com.ibrito.practice.demo.utils.Util;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -18,30 +18,34 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.UUID;
 
 @AllArgsConstructor
 @Service
 public class ClientServiceImp implements ClientService {
 
-    @Autowired
-    private final ClientRepository clientRepository;
+    @Autowired()
+    ClientRepository clientRepository;
 
     @Override
-    public ClientRS create(ClientRQ client) {
+    public ClientRS create(ClientRQ clientRQ) {
 
-        ModelMapper modelMapper = Util.getStrictMapper();
-        ClientEntity customerEntity = clientRepository
-                .save(modelMapper.map(client, ClientEntity.class));
-        return modelMapper.map(customerEntity, ClientRS.class);
+        ClientEntity clientEntity = Util.getStrictMapper().map(clientRQ, ClientEntity.class);
+        clientEntity.setCreated_at( new Date());
+
+        ClientEntity client = clientRepository
+                .save(clientEntity);
+
+        return Util.getStrictMapper().map(client, ClientRS.class);
     }
 
     @Override
-    public ClientEntity getById(UUID id) {
+    public ClientRS getById(UUID id) {
         ClientEntity client = clientRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Client not found"));
 
-        return client;
+        return Util.getStrictMapper().map(client, ClientRS.class);
     }
 
     @Override
@@ -60,13 +64,15 @@ public class ClientServiceImp implements ClientService {
     }
 
     @Override
-    public ClientEntity update(UUID id, ClientRQ clientRQ) {
+    public ClientRS update(UUID id, ClientRQ clientRQ) {
         ClientEntity client = clientRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException( "Client with id " + id + " does not exists"));
+        Converter.mapData(clientRQ, client);
 
-        client = clientRepository.save(client);
+        ClientEntity clientRS = clientRepository
+                .save(client);
 
-        return client;
+        return Util.getStrictMapper().map(clientRS, ClientRS.class);
     }
 
     @Override

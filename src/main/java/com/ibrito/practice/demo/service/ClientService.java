@@ -12,11 +12,11 @@ import java.util.UUID;
 public interface ClientService{
     ClientRS create(ClientRQ client);
 
-    ClientEntity getById(UUID id);
+    ClientRS getById(UUID id);
 
     ClientPageableRS getAll(ClientFilter clientFilter);
 
-    ClientEntity update(UUID id, ClientRQ clientRQ);
+    ClientRS update(UUID id, ClientRQ clientRQ);
 
     void delete(UUID id);
 

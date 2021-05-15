@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/clients")
@@ -43,5 +44,16 @@ public class ClientController {
 
         return ResponseEntity.status(HttpStatus.OK).body(promiseResponse);
     }
+
+
+    @GetMapping(value = "/{clientId}", produces = {
+            MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<ClientRS> getById(@PathVariable(name = "clientId") UUID id) {
+
+        ClientRS promiseResponse = clientService.getById(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(promiseResponse);
+    }
+
 
 }

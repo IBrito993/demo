@@ -9,6 +9,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
+
 @Data
 @Builder
 @AllArgsConstructor
