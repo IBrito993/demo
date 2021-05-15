@@ -17,11 +17,11 @@ public class ClientRQ {
     @NotNull(message = "[name] cannot be null")
     @NotBlank(message = "[name] cannot be empty")
     String name;
-    @NotNull(message = "[name] cannot be null")
-    @NotBlank(message = "[name] cannot be empty")
+    @NotNull(message = "[rut] cannot be null")
+    @NotBlank(message = "[rut] cannot be empty")
     String rut;
-    @NotNull(message = "[name] cannot be null")
-    @NotBlank(message = "[name] cannot be empty")
+    @NotNull(message = "[email] cannot be null")
+    @NotBlank(message = "[email] cannot be empty")
     String email;
 
     String address;
