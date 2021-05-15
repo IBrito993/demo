@@ -3,12 +3,14 @@ package com.ibrito.practice.demo.service.imp;
 import com.ibrito.practice.demo.dto.client.ClientFilter;
 import com.ibrito.practice.demo.dto.client.ClientPageableRS;
 import com.ibrito.practice.demo.dto.client.ClientRQ;
+import com.ibrito.practice.demo.dto.client.ClientRS;
 import com.ibrito.practice.demo.entity.ClientEntity;
 import com.ibrito.practice.demo.exception.NotFoundException;
 import com.ibrito.practice.demo.repository.ClientRepository;
 import com.ibrito.practice.demo.service.ClientService;
 import com.ibrito.practice.demo.utils.Util;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -16,7 +18,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -27,10 +28,12 @@ public class ClientServiceImp implements ClientService {
     private final ClientRepository clientRepository;
 
     @Override
-    public ClientEntity create(ClientEntity client) {
-        clientRepository.save(client);
+    public ClientRS create(ClientRQ client) {
 
-        return client;
+        ModelMapper modelMapper = Util.getStrictMapper();
+        ClientEntity customerEntity = clientRepository
+                .save(modelMapper.map(client, ClientEntity.class));
+        return modelMapper.map(customerEntity, ClientRS.class);
     }
 
     @Override

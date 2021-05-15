@@ -44,8 +44,8 @@ class ClientServiceImpTest {
 
     @Test
     void canCreateClient() {
-        ClientEntity client = ClientEntity.builder().address("address")
-                .created_at(new Date()).email("mail@mail.com")
+        ClientRQ client = ClientRQ.builder().address("address")
+                .email("mail@mail.com")
                 .name("name").phone("999999999").rut("12345698-0").build();
 
         clientService.create(client);

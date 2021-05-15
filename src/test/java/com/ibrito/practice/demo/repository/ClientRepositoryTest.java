@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 class ClientRepositoryTest {
+
     @Autowired
     private ClientRepository underTest;
 
