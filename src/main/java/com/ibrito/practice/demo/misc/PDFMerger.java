@@ -1,10 +1,16 @@
 package com.ibrito.practice.demo.misc;
 
+
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.pdf.PdfWriter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 
-import java.awt.*;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class PDFMerger {
@@ -16,7 +22,7 @@ public class PDFMerger {
         try {
             mergePDFs(pdf1Path, pdf2Path, outputPath);
             System.out.println("La fusión de PDFs se completó con éxito. El nuevo archivo se guardó en: " + outputPath);
-        } catch (IOException e) {
+        } catch (IOException  e) {
             System.err.println("Se produjo un error al fusionar los PDFs: " + e.getMessage());
         }
 
@@ -26,7 +32,7 @@ public class PDFMerger {
         try {
             convertJpgToPdf(jpgFolderPath, outputPdfPath);
             System.out.println("La conversión de JPG a PDF se completó con éxito. El nuevo archivo se guardó en: " + outputPdfPath);
-        } catch (IOException e) {
+        } catch (IOException | DocumentException e) {
             System.err.println("Se produjo un error al convertir las imágenes a PDF: " + e.getMessage());
         }
 
@@ -54,20 +60,21 @@ public class PDFMerger {
         }
     }
 
-    private static void convertJpgToPdf(String jpgFolderPath, String outputPdfPath) throws IOException {
-        try (PdfWriter writer = new PdfWriter(outputPdfPath);
-             PdfDocument pdf = new PdfDocument(writer);
-             Document document = new Document(pdf)) {
-
+    private static void convertJpgToPdf(String jpgFolderPath, String outputPdfPath) throws IOException, DocumentException {
+        Document document = new Document();
+        try {
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputPdfPath));
             File folder = new File(jpgFolderPath);
             File[] jpgFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".jpg") || name.toLowerCase().endsWith(".jpeg"));
 
             if (jpgFiles != null) {
                 for (File jpgFile : jpgFiles) {
-                    Image img = new Image(ImageDataFactory.create(jpgFile.getAbsolutePath()));
+                    Image img = Image.getInstance(jpgFile.getAbsolutePath());
                     document.add(img);
                 }
             }
+        } catch (DocumentException e) {
+            throw new RuntimeException(e);
         }
     }
 }

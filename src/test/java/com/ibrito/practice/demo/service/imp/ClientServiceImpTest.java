@@ -14,9 +14,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -95,10 +93,10 @@ class ClientServiceImpTest {
                         .created_at(new Date()).email("mail@mail.com")
                         .name("name").phone("999999999").rut("12345698-0")
                         .build());
-        Page<ClientEntity> customerPage = new PageImpl(customers);
+        Page<ClientEntity> customerPage = new PageImpl<ClientEntity>(customers);
 
         Mockito
-                .when(clientRepository.findAll(Mockito.any(Example.class), Mockito.any(Pageable.class)))
+                .when(clientRepository.findAll(Mockito.any(), Mockito.any(Pageable.class)))
                 .thenReturn(customerPage);
 
         ClientPageableRS response = clientService
