@@ -14,6 +14,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -25,37 +27,49 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
+@DataJpaTest
 class ClientServiceImpTest {
+
     @Mock
     private ClientRepository clientRepository;
-    @InjectMocks
-    private ClientService clientService = new ClientServiceImp(clientRepository) ; // underTest
+
+    private ClientService clientService  ; // underTest
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        clientService = new ClientServiceImp(clientRepository);
     }
 
     @Test
     void canCreateClient() {
+
+        ClientEntity client = ClientEntity.builder().address("address")
+                .email("mail@mail.com").created_at(new Date())
+                .name("name").phone("999999999").rut("12345698-0").build();
+
         ClientRQ clientRQ = ClientRQ.builder().address("address")
                 .email("mail@mail.com")
                 .name("name").phone("999999999").rut("12345698-0").build();
+
+        Mockito.when(clientRepository.save(Mockito.any())).thenReturn(client);
 
         clientService.create(clientRQ);
 
         ArgumentCaptor<ClientEntity> clientArgumentCaptor =
                 ArgumentCaptor.forClass(ClientEntity.class);
 
+        verify(clientRepository, times(1)).save(Mockito.any());
         verify(clientRepository)
                 .save(clientArgumentCaptor.capture());
 
         ClientEntity capturedClient = clientArgumentCaptor.getValue();
 
-        assertThat(capturedClient).isEqualTo(clientRQ);
+        assertThat(capturedClient.getName()).isEqualTo(clientRQ.getName());
 
     }
 
