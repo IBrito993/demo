@@ -6,8 +6,8 @@ import com.ibrito.practice.demo.dto.client.ClientPageableRS;
 import com.ibrito.practice.demo.dto.client.ClientRQ;
 import com.ibrito.practice.demo.dto.client.ClientRS;
 import com.ibrito.practice.demo.service.ClientService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,11 +20,13 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/clients")
 @CrossOrigin(origins = {"*"})
+@Slf4j
+@RequiredArgsConstructor
 public class ClientController {
 
-    @Autowired
-    ClientService clientService;
-    Logger logger = LogManager.getLogger(this.getClass());
+
+    private final ClientService clientService;
+
 
     @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ClientRS> create(@Valid @RequestBody ClientRQ client) {
@@ -44,7 +46,6 @@ public class ClientController {
 
         return ResponseEntity.status(HttpStatus.OK).body(promiseResponse);
     }
-
 
     @GetMapping(value = "/{clientId}", produces = {
             MediaType.APPLICATION_JSON_VALUE})

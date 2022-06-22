@@ -5,5 +5,6 @@ public class Constants {
   public static final String DATA_CONFLICT = "Data conflict";
   public static final String DATA_NOT_FOUND = "Data not found";
   public static final String NO_DETAIL_PROMO = "Promotion must have detail";
+  public static final String INPUT_DATA_ERROR = "Input data error";
 
 }
